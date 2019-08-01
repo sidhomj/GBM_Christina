@@ -1,9 +1,6 @@
 from JWA.JWA import *
 
-JW_obj = JWA('Analysis')
-#file = 'GBM Single Cell Data Share/072519/mnn/myeloid.rds'
-#file = 'GBM Single Cell Data Share/072519/mnn/t.rds'
-#file = 'GBM Single Cell Data Share/072519/idents/tIdents.RDS'
+JW_obj = JWA('T')
 
 #T-cells
 data_file = 'GBM Single Cell Data Share/072519/resid/t.rds'
@@ -20,10 +17,3 @@ samples=['GBM006','GMB030']
 #JW_obj.Plot(type='By_Gene',gene_name='CD4',samples=samples)
 JW_obj.Plot(type='By_Cluster',alpha=1.0,samples=samples)
 JW_obj.Plot(type='By_Sample',samples=samples)
-
-
-
-
-
-
-
