@@ -15,9 +15,9 @@ JW_obj.Run_UMAP(Load_Prev_Data=True)
 JW_obj.Load_Clustering(cluster_file,Load_Prev_Data=True)
 # By_Gene, By_Sample, By_Cluster
 samples=['GBM006','GMB030']
-JW_obj.Plot(type='By_Gene',gene_name='CD4',samples=samples)
-JW_obj.Plot(type='By_Cluster',alpha=0.5)
-JW_obj.Plot(type='By_Sample')
+#JW_obj.Plot(type='By_Gene',gene_name='CD4',samples=samples)
+JW_obj.Plot(type='By_Cluster',alpha=1.0,samples=samples)
+JW_obj.Plot(type='By_Sample',samples=samples)
 
 
 

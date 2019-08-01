@@ -84,11 +84,15 @@ class JWA(object):
         X_2 = self.X_2
         X = self.X
         sample_id = np.array([x[0:6] for x in self.cell_id])
+        C = self.C
+
         if samples is not None:
             idx = np.where(np.isin(sample_id,samples))[0]
             X_2 = X_2[idx,:]
             sample_id = sample_id[idx]
             X = X[:,idx]
+            C = C[idx]
+
         if type == 'By_Gene':
             c = np.log2(X[np.where(self.genes==gene_name)[0][0],:]+1)
             title = gene_name
@@ -100,11 +104,11 @@ class JWA(object):
             df['c'] = sample_id
             title = 'Samples'
         elif type == 'By_Cluster':
-            c = self.C
+            c = C
             c = c.astype(np.str)
             df = pd.DataFrame()
-            df['X'] = self.X_2[:, 0]
-            df['Y'] = self.X_2[:, 1]
+            df['X'] = X_2[:, 0]
+            df['Y'] = X_2[:, 1]
             df['c'] = c
             df['c'] = 'Cluster ' + df['c']
             title = 'Clusters'
