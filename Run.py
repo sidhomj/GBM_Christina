@@ -4,11 +4,13 @@ JW_obj = JWA('Analysis')
 #file = 'GBM Single Cell Data Share/072519/mnn/myeloid.rds'
 #file = 'GBM Single Cell Data Share/072519/mnn/t.rds'
 #file = 'GBM Single Cell Data Share/072519/idents/tIdents.RDS'
+
+#T-cells
 data_file = 'GBM Single Cell Data Share/072519/resid/t.rds'
-id_file = 'GBM Single Cell Data Share/072519/resid/t_id.csv'
-gene_file = 'GBM Single Cell Data Share/072519/resid/t_genes.csv'
 mnn_file = 'GBM Single Cell Data Share/072519/mnn/t.rds'
 cluster_file = 'GBM Single Cell Data Share/072519/idents/tIdents.RDS'
+id_file = 'JW_data/t_id.csv'
+gene_file = 'JW_data/t_genes.csv'
 
 JW_obj.Load_Data(data_file,id_file,gene_file,mnn_file,Load_Prev_Data=True)
 JW_obj.Run_UMAP(Load_Prev_Data=True)
