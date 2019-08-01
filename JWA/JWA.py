@@ -75,22 +75,29 @@ class JWA(object):
                 pickle.dump(C,f,protocol=4)
 
         else:
-            with open(os.path.join(self.Name, 'cluster_data.pkl'), 'wb') as f:
+            with open(os.path.join(self.Name,'cluster_data.pkl'),'rb') as f:
                 C = pickle.load(f)
 
         self.C = C
 
-    def Plot(self,type,gene_name=None,s=15,alpha=1.0):
+    def Plot(self,type,gene_name=None,s=15,alpha=1.0,samples=None):
+        X_2 = self.X_2
+        X = self.X
+        sample_id = np.array([x[0:6] for x in self.cell_id])
+        if samples is not None:
+            idx = np.where(np.isin(sample_id,samples))[0]
+            X_2 = X_2[idx,:]
+            sample_id = sample_id[idx]
+            X = X[:,idx]
         if type == 'By_Gene':
-            c = np.log2(self.X[np.where(self.genes==gene_name)[0][0],:]+1)
+            c = np.log2(X[np.where(self.genes==gene_name)[0][0],:]+1)
             title = gene_name
             cmap = 'jet'
         elif type == 'By_Sample':
-            c = np.array([x[0:6] for x in self.cell_id])
             df = pd.DataFrame()
-            df['X'] = self.X_2[:,0]
-            df['Y'] = self.X_2[:,1]
-            df['c'] = c
+            df['X'] = X_2[:,0]
+            df['Y'] = X_2[:,1]
+            df['c'] = sample_id
             title = 'Samples'
         elif type == 'By_Cluster':
             c = self.C
@@ -101,9 +108,10 @@ class JWA(object):
             df['c'] = c
             df['c'] = 'Cluster ' + df['c']
             title = 'Clusters'
+
         plt.figure()
         if type == 'By_Gene':
-            plt.scatter(self.X_2[:,0],self.X_2[:,1],c=c,s=s,cmap=cmap)
+            plt.scatter(X_2[:,0],X_2[:,1],c=c,s=s,cmap=cmap)
         else:
             sns.scatterplot(data=df, x='X', y='Y', hue='c', linewidth=0, alpha=alpha, s=s)
         plt.xlabel('')
