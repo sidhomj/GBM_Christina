@@ -80,6 +80,41 @@ class JWA(object):
 
         self.C = C
 
+    def Cluster_Def(self,top=10,type='one_v_all',Load_Prev_Data=False):
+
+        if Load_Prev_Data is False:
+            if type == 'one_v_all':
+                DFs = []
+                for c in np.unique(self.C):
+                    pos = np.where(self.C==c)[0]
+                    neg = np.where(self.C!=c)[0]
+                    pos_list = []
+                    neg_list = []
+                    for g in self.genes:
+                        g_idx = np.where(self.genes==g)[0][0]
+                        pos_val = self.X[g_idx,pos]
+                        neg_val = self.X[g_idx,neg]
+                        pos_list.append(np.mean(pos_val))
+                        neg_list.append(np.mean(neg_val))
+                    df = pd.DataFrame()
+                    df['Gene'] = self.genes
+                    df['Pos'] = pos_list
+                    df['Neg'] = neg_list
+                    df['FC'] = df['Pos']-df['Neg']
+                    df.sort_values(by='FC',ascending=False,inplace=True)
+                    df = df.iloc[0:top]
+                    DFs.append(df)
+
+            out = dict(zip(np.unique(self.C),DFs))
+
+            with open(os.path.join(self.Name,'cluster_def.pkl'),'wb') as f:
+                pickle.dump(out,f,protocol=4)
+        else:
+            with open(os.path.join(self.Name,'cluster_def.pkl'),'rb') as f:
+                out = pickle.load(f)
+
+        self.Cluster_Def = out
+
     def Plot(self,type,gene_name=None,s=15,alpha=1.0,samples=None):
         X_2 = self.X_2
         X = self.X
