@@ -108,6 +108,12 @@ class JWA(object):
 
             with open(os.path.join(self.Name,'cluster_def.pkl'),'wb') as f:
                 pickle.dump(out,f,protocol=4)
+
+            if not os.path.exists(os.path.join(self.directory_results,'Cluster_Def')):
+                os.makedirs(os.path.join(self.directory_results,'Cluster_Def'))
+
+            for c,df in zip(np.unique(self.C),DFs):
+                df.to_csv(os.path.join(self.directory_results,'Cluster_Def',str(c)+'.csv'),index=False)
         else:
             with open(os.path.join(self.Name,'cluster_def.pkl'),'rb') as f:
                 out = pickle.load(f)
@@ -134,6 +140,7 @@ class JWA(object):
         df_out.index = all_samples
 
         self.Cluster_Prop_DF = df_out
+        df_out.to_csv(os.path.join(self.directory_results,'Cluster_Prop.csv'))
 
     def Plot(self,type,gene_name=None,s=15,alpha=1.0,samples=None):
         X_2 = self.X_2
