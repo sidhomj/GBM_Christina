@@ -1,9 +1,10 @@
 import numpy as np
+import colorsys
 
-def gene_means(g,genes,X):
-    g_idx = np.where(genes == g)[0][0]
-    pos_val = X[g_idx, pos]
-    neg_val = X[g_idx, neg]
-    return
-    pos_list.append(np.mean(pos_val))
-    neg_list.append(np.mean(neg_val))
+def Generate_Color_Dict(labels):
+    N = len(np.unique(labels))
+    HSV_tuples = [(x * 1.0 / N, 1.0, 0.5) for x in range(N)]
+    np.random.shuffle(HSV_tuples)
+    RGB_tuples = map(lambda x: colorsys.hsv_to_rgb(*x), HSV_tuples)
+    color_dict = dict(zip(np.unique(labels), RGB_tuples))
+    return color_dict

@@ -7,6 +7,7 @@ import pickle
 import umap
 import matplotlib.pyplot as plt
 import seaborn as sns
+from JWA.utils import *
 
 class JWA(object):
     def __init__(self,Name='Analysis'):
@@ -186,7 +187,8 @@ class JWA(object):
         if type == 'By_Gene':
             plt.scatter(X_2[:,0],X_2[:,1],c=c,s=s,cmap=cmap)
         else:
-            sns.scatterplot(data=df, x='X', y='Y', hue='c', linewidth=0, alpha=alpha, s=s)
+            colors = sns.color_palette('Set1', n_colors=len(np.unique(df['c'])))
+            sns.scatterplot(data=df, x='X', y='Y', hue='c', linewidth=0, alpha=alpha, s=s,palette=colors)
         plt.xlabel('')
         plt.ylabel('')
         plt.xticks([])
