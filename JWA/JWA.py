@@ -73,8 +73,8 @@ class JWA(object):
             df_out['barcode'] = df_merge['barcode']
             df_out['Clone_ID'] = df_merge['cdr3_nt_x'] + '_' + df_merge['cdr3_nt_y']
 
-            self.barcode_tcr = df_out['barcode']
-            self.clone_id = df_out['Clone_ID']
+            self.barcode_tcr = np.asarray(df_out['barcode'])
+            self.clone_id = np.asarray(df_out['Clone_ID'])
             self.Clone_Tab = df_out['Clone_ID'].value_counts()
 
     def Run_UMAP(self,Load_Prev_Data=False):
@@ -190,7 +190,7 @@ class JWA(object):
         #     break
         # check=1
 
-    def Plot(self,type,gene_name=None,s=15,alpha=1.0,samples=None):
+    def Plot(self,type,gene_name=None,s=15,alpha=1.0,samples=None,clone=None):
         X_2 = self.X_2
         plt.figure()
         plt.scatter(X_2[:,0],X_2[:,1])
@@ -229,10 +229,25 @@ class JWA(object):
             df['c'] = c
             df['c'] = 'Cluster ' + df['c']
             title = 'Clusters'
+        elif type == 'By_Clone':
+            b = self.barcode_tcr[np.isin(self.clone_id, clone)]
+            idx = np.isin(self.cell_id,b)
+            df = pd.DataFrame()
+            df['X'] = X_2[:, 0]
+            df['Y'] = X_2[:, 1]
+            df['c'] = None
+            df['c'].iloc[idx] = 'c'
+            df['c'].iloc[~idx] = 'b'
+
 
         plt.figure()
         if type == 'By_Gene':
             plt.scatter(X_2[:,0],X_2[:,1],c=c,s=s,cmap=cmap)
+        elif type == 'By_Clone':
+            plt.figure()
+            plt.scatter(X_2[~idx,0],X_2[~idx,1],c='k',s=s)
+            plt.scatter(X_2[idx,0],X_2[idx,1],c='r',s=s)
+
         else:
             # colors = sns.color_palette('Set3', n_colors=len(np.unique(df['c'])))
             #colors = Generate_Color_Dict(df['c'])
@@ -244,6 +259,7 @@ class JWA(object):
             else:
                 colors = sns.color_palette('Set3', n_colors=len(np.unique(df['c'])))
             sns.scatterplot(data=df, x='X', y='Y', hue='c', linewidth=0, alpha=alpha, s=s,palette=colors)
+
         plt.xlabel('')
         plt.ylabel('')
         plt.xticks([])

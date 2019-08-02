@@ -13,9 +13,10 @@ JW_obj.Load_Data(data_file,id_file,gene_file,mnn_file,Load_Prev_Data=True)
 alpha_file = 'GBM Single Cell Data Share/072519/vdj/tra.csv'
 beta_file = 'GBM Single Cell Data Share/072519/vdj/trb.csv'
 JW_obj.Load_TCR(alpha_file,beta_file,Load_Prev_Data=False)
-
-JW_obj.Run_UMAP(Load_Prev_Data=True)
 JW_obj.Load_Clustering(cluster_file,Load_Prev_Data=True)
+JW_obj.Run_UMAP(Load_Prev_Data=True)
+JW_obj.Plot('By_Clone',clone=JW_obj.Clone_Tab.index[0])
+
 list_of_genes = ['IL2','GZMA','GNLY','PRF1','GZMB','GZMK','IFNG','LAG3','TIGIT','PDCD1','HAVCR2','CTLA4']
 JW_obj.Cluster_Def(top=50,Load_Prev_Data=True)
 list_of_genes = []
