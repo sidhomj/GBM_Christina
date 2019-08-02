@@ -94,7 +94,7 @@ class JWA(object):
             C = C[idx]
 
         if type == 'By_Gene':
-            c = np.log2(X[np.where(self.genes==gene_name)[0][0],:]+1)
+            c = X[np.where(self.genes==gene_name)[0][0],:]
             title = gene_name
             cmap = 'jet'
         elif type == 'By_Sample':
