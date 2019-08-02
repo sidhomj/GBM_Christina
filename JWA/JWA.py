@@ -232,22 +232,14 @@ class JWA(object):
         elif type == 'By_Clone':
             b = self.barcode_tcr[np.isin(self.clone_id, clone)]
             idx = np.isin(self.cell_id,b)
-            df = pd.DataFrame()
-            df['X'] = X_2[:, 0]
-            df['Y'] = X_2[:, 1]
-            df['c'] = None
-            df['c'].iloc[idx] = 'c'
-            df['c'].iloc[~idx] = 'b'
-
+            title = 'Clone'
 
         plt.figure()
         if type == 'By_Gene':
             plt.scatter(X_2[:,0],X_2[:,1],c=c,s=s,cmap=cmap)
         elif type == 'By_Clone':
-            plt.figure()
-            plt.scatter(X_2[~idx,0],X_2[~idx,1],c='k',s=s)
-            plt.scatter(X_2[idx,0],X_2[idx,1],c='r',s=s)
-
+            plt.scatter(X_2[~idx,0],X_2[~idx,1],c='grey',s=s,alpha=alpha)
+            plt.scatter(X_2[idx,0],X_2[idx,1],c='r',s=s,alpha=alpha)
         else:
             # colors = sns.color_palette('Set3', n_colors=len(np.unique(df['c'])))
             #colors = Generate_Color_Dict(df['c'])
