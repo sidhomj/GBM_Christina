@@ -117,6 +117,13 @@ class JWA(object):
 
     def Plot(self,type,gene_name=None,s=15,alpha=1.0,samples=None):
         X_2 = self.X_2
+        plt.figure()
+        plt.scatter(X_2[:,0],X_2[:,1])
+        ax = plt.gca()
+        xlim = ax.get_xlim()
+        ylim = ax.get_ylim()
+        plt.close()
+
         X = self.X
         sample_id = np.array([x[0:6] for x in self.cell_id])
         C = self.C
@@ -158,5 +165,7 @@ class JWA(object):
         plt.xticks([])
         plt.yticks([])
         plt.title(title)
+        plt.xlim(xlim)
+        plt.ylim(ylim)
 
 
