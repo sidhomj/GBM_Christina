@@ -75,7 +75,7 @@ class JWA(object):
 
             self.barcode_tcr = df_out['barcode']
             self.clone_id = df_out['Clone_ID']
-
+            self.Clone_Tab = df_out['Clone_ID'].value_counts()
 
     def Run_UMAP(self,Load_Prev_Data=False):
         if Load_Prev_Data is False:
