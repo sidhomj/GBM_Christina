@@ -25,7 +25,7 @@ JW_obj.Plot(type='By_Sample',samples=samples)
 
 all_samples = np.unique(np.array([x[0:6] for x in JW_obj.cell_id]))
 
-JW_obj.Plot(type='By_Sample',samples=all_samples[5])
+JW_obj.Plot(type='By_Sample',samples=all_samples[:4])
 JW_obj.Plot(type='By_Sample',samples=all_samples[4:])
 
 JW_obj.Plot(type='By_Sample',samples='GMB030')
