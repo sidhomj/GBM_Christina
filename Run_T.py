@@ -18,3 +18,17 @@ JW_obj.Cluster_Def(top=10,Load_Prev_Data=True)
 JW_obj.Plot(type='By_Gene',gene_name='BATF',s=5)
 JW_obj.Plot(type='By_Cluster',alpha=1.0)
 JW_obj.Plot(type='By_Sample',samples=samples)
+
+samples=['GBM006','GMB030']
+JW_obj.Plot(type='By_Sample',samples=samples)
+
+all_samples = np.unique(np.array([x[0:6] for x in JW_obj.cell_id]))
+JW_obj.Plot(type='By_Sample',samples=all_samples[:4])
+JW_obj.Plot(type='By_Sample',samples=all_samples[4:])
+
+
+
+
+
+
+
