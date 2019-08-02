@@ -187,7 +187,15 @@ class JWA(object):
         if type == 'By_Gene':
             plt.scatter(X_2[:,0],X_2[:,1],c=c,s=s,cmap=cmap)
         else:
-            colors = sns.color_palette('Set1', n_colors=len(np.unique(df['c'])))
+            # colors = sns.color_palette('Set3', n_colors=len(np.unique(df['c'])))
+            #colors = Generate_Color_Dict(df['c'])
+            colors = ['#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#bcf60c',
+                      '#fabebe', '#008080', '#e6beff', '#9a6324', '#fffac8', '#800000', '#aaffc3',
+                      '#808000', '#ffd8b1', '#000075', '#808080', '#ffffff', '#000000']
+            if len(np.unique(df['c'])) <= len(colors):
+                colors = colors[:len(np.unique(df['c']))]
+            else:
+                colors = sns.color_palette('Set3', n_colors=len(np.unique(df['c'])))
             sns.scatterplot(data=df, x='X', y='Y', hue='c', linewidth=0, alpha=alpha, s=s,palette=colors)
         plt.xlabel('')
         plt.ylabel('')
