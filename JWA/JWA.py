@@ -54,6 +54,29 @@ class JWA(object):
         self.genes = genes
         self.cell_id = cell_id
 
+    def Load_TCR(self,alpha_file,beta_file,Load_Prev_Data=False):
+
+        if Load_Prev_Data is False:
+            df_a = pd.read_csv(alpha_file)
+            c = df_a['barcode'].value_counts()
+            keep = np.asarray(c[c == 1].index)
+            df_a = df_a[df_a['barcode'].isin(keep)]
+
+            df_b = pd.read_csv(beta_file)
+            c = df_b['barcode'].value_counts()
+            keep = np.asarray(c[c == 1].index)
+            df_b = df_b[df_b['barcode'].isin(keep)]
+
+            df_merge = pd.merge(df_a,df_b,on=['barcode'])
+
+            df_out = pd.DataFrame()
+            df_out['barcode'] = df_merge['barcode']
+            df_out['Clone_ID'] = df_merge['cdr3_nt_x'] + '_' + df_merge['cdr3_nt_y']
+
+            self.barcode_tcr = df_out['barcode']
+            self.clone_id = df_out['Clone_ID']
+
+
     def Run_UMAP(self,Load_Prev_Data=False):
         if Load_Prev_Data is False:
             X_2 = umap.UMAP().fit_transform(self.X_mnn)
@@ -142,6 +165,30 @@ class JWA(object):
 
         self.Cluster_Prop_DF = df_out
         df_out.to_csv(os.path.join(self.directory_results,'Cluster_Prop.csv'))
+
+    def HM_Clusters(self,list_of_genes):
+        idx = np.where(np.isin(self.genes,list_of_genes))[0]
+        X = self.X[idx,:].T
+
+        idx_e = []
+        for c in np.unique(self.C):
+            idx_e.append(np.where(self.C==c)[0])
+        idx_e = np.hstack(idx_e)
+        X = X[idx_e]
+        C = self.C[idx_e]
+
+        df = pd.DataFrame(X)
+        df.columns = self.genes[idx]
+        color_dict = Generate_Color_Dict(self.C)
+        row_colors = [color_dict[x] for x in C]
+        sns.clustermap(data=df,cmap='bwr',row_cluster=False,row_colors=row_colors,standard_scale=1)
+        # for c in np.unique(self.C):
+        #     idx_c = np.where(self.C==c)[0]
+        #     for x in X:
+        #         break
+        #
+        #     break
+        # check=1
 
     def Plot(self,type,gene_name=None,s=15,alpha=1.0,samples=None):
         X_2 = self.X_2
