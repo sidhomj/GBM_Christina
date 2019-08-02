@@ -81,7 +81,6 @@ class JWA(object):
         self.C = C
 
     def Cluster_Def(self,top=10,type='one_v_all',Load_Prev_Data=False):
-
         if Load_Prev_Data is False:
             if type == 'one_v_all':
                 DFs = []
@@ -113,7 +112,28 @@ class JWA(object):
             with open(os.path.join(self.Name,'cluster_def.pkl'),'rb') as f:
                 out = pickle.load(f)
 
-        self.Cluster_Def = out
+        self.Cluster_Def_DF = out
+
+    def Cluster_Prop(self):
+        sample_id = np.array([x[0:6] for x in self.cell_id])
+        all_samples = np.unique(sample_id)
+
+        prop = []
+        for s in all_samples:
+            idx = sample_id==s
+            p = []
+            for c in  np.unique(self.C):
+                p.append(np.sum(self.C[idx] == c) / len(self.C[idx]))
+            p = np.asarray(p)
+            prop.append(p)
+
+        prop = np.vstack(prop)
+
+        df_out = pd.DataFrame(prop)
+        df_out.columns = np.unique(self.C)
+        df_out.index = all_samples
+
+        self.Cluster_Prop_DF = df_out
 
     def Plot(self,type,gene_name=None,s=15,alpha=1.0,samples=None):
         X_2 = self.X_2
