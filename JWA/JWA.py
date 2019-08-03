@@ -8,6 +8,8 @@ import umap
 import matplotlib.pyplot as plt
 import seaborn as sns
 from JWA.utils import *
+from scipy.stats import spearmanr
+from multiprocessing import Pool
 
 class JWA(object):
     def __init__(self,Name='Analysis'):
@@ -165,6 +167,36 @@ class JWA(object):
 
         self.Cluster_Prop_DF = df_out
         df_out.to_csv(os.path.join(self.directory_results,'Cluster_Prop.csv'))
+
+    def Corr_Genes(self,list_of_genes,dir='pos'):
+
+        if isinstance(list_of_genes,str):
+            list_of_genes = [list_of_genes]
+
+        DFs = []
+        for g in list_of_genes:
+            break
+            idx_g = np.where(self.genes==g)[0][0]
+            val_g = self.X[idx_g]
+            corr_list = []
+            for c in np.setdiff1d(self.genes,g):
+                idx_c = np.where(self.genes==c)[0][0]
+                val_c = self.X[idx_c]
+                corr,_ = spearmanr(val_g,val_c)
+                corr_list.append(corr)
+
+            df = pd.DataFrame()
+            df['Genes'] = np.setdiff1d(self.genes,g)
+            df['Corr'] = corr_list
+            if dir == 'pos':
+                df.sort_values(by='Corr',ascending=False,inplace=True)
+            else:
+                df.sort_values(by='Corr',ascending=True,inplace=True)
+
+            DFs.append(df)
+
+        self.Corr_Genes_DF = dict(zip(list_of_genes,DFs))
+
 
     def HM_Clusters(self,list_of_genes):
         idx = np.where(np.isin(self.genes,list_of_genes))[0]
