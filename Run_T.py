@@ -18,7 +18,7 @@ beta_file = 'GBM Single Cell Data Share/072519/vdj/trb.csv'
 JW_obj.Load_TCR(alpha_file,beta_file,Load_Prev_Data=False)
 
 #Find correlated genes
-list_of_genes = ['IL2','GZMA','GNLY']
+list_of_genes = ['IL2']
 JW_obj.Corr_Genes(list_of_genes,dir='pos')
 
 

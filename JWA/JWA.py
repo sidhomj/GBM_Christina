@@ -173,7 +173,7 @@ class JWA(object):
         if isinstance(list_of_genes,str):
             list_of_genes = [list_of_genes]
 
-        if os.path.exists(os.path.join(self.directory_results,'Correlation')):
+        if not os.path.exists(os.path.join(self.directory_results,'Correlation')):
             os.makedirs(os.path.join(self.directory_results,'Correlation'))
 
         DFs = []
