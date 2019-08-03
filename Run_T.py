@@ -18,11 +18,10 @@ beta_file = 'GBM Single Cell Data Share/072519/vdj/trb.csv'
 JW_obj.Load_TCR(alpha_file,beta_file,Load_Prev_Data=False)
 
 #Find correlated genes
-list_of_genes = ['IL2']
-JW_obj.Corr_Genes(list_of_genes,dir='pos')
+#list_of_genes = ['IL2']
+#JW_obj.Corr_Genes(list_of_genes,dir='pos')
 
-
-JW_obj.Plot('By_Clone',clone=JW_obj.Clone_Tab.index[6])
+JW_obj.Plot('By_Clone',clone=JW_obj.Clone_Tab.index[6],samples='GBM036')
 clone_barcode = JW_obj.barcode_tcr[JW_obj.clone_id==JW_obj.Clone_Tab.index[0]]
 
 list_of_genes = ['IL2','GZMA','GNLY','PRF1','GZMB','GZMK','IFNG','LAG3','TIGIT','PDCD1','HAVCR2','CTLA4']

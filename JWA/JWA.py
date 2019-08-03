@@ -78,6 +78,8 @@ class JWA(object):
             self.barcode_tcr = np.asarray(df_out['barcode'])
             self.clone_id = np.asarray(df_out['Clone_ID'])
             self.Clone_Tab = df_out['Clone_ID'].value_counts()
+            self.Clone_Tab = self.Clone_Tab.to_frame()
+            self.Clone_Tab['Sample'] = [self.barcode_tcr[np.where(self.Clone_Tab.index[x]==self.clone_id)[0][0]][:6] for x in range(len(self.Clone_Tab))]
 
     def Run_UMAP(self,Load_Prev_Data=False):
         if Load_Prev_Data is False:
@@ -238,6 +240,7 @@ class JWA(object):
         X = self.X
         sample_id = np.array([x[0:6] for x in self.cell_id])
         C = self.C
+        cell_id = self.cell_id
 
         if samples is not None:
             idx = np.where(np.isin(sample_id,samples))[0]
@@ -245,6 +248,7 @@ class JWA(object):
             sample_id = sample_id[idx]
             X = X[:,idx]
             C = C[idx]
+            cell_id = cell_id[idx]
 
         if type == 'By_Gene':
             c = X[np.where(self.genes==gene_name)[0][0],:]
@@ -267,7 +271,7 @@ class JWA(object):
             title = 'Clusters'
         elif type == 'By_Clone':
             b = self.barcode_tcr[np.isin(self.clone_id, clone)]
-            idx = np.isin(self.cell_id,b)
+            idx = np.isin(cell_id,b)
             title = 'Clone'
 
         plt.figure()
