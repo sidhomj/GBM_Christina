@@ -47,7 +47,7 @@ class JWA(object):
 
         else:
             with open(os.path.join(self.Name, 'Data.pkl'), 'rb') as f:
-                X, X_mnn,genes, cell_id = pickle.load(f)
+                X, X_mnn, genes, cell_id = pickle.load(f)
 
         self.X = X
         self.X_mnn = X_mnn
