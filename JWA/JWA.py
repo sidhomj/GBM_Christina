@@ -175,7 +175,6 @@ class JWA(object):
 
         DFs = []
         for g in list_of_genes:
-            break
             idx_g = np.where(self.genes==g)[0][0]
             val_g = self.X[idx_g]
             corr_list = []
