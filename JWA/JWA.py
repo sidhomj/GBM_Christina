@@ -173,6 +173,9 @@ class JWA(object):
         if isinstance(list_of_genes,str):
             list_of_genes = [list_of_genes]
 
+        if os.path.exists(os.path.join(self.directory_results,'Correlation')):
+            os.makedirs(os.path.join(self.directory_results,'Correlation'))
+
         DFs = []
         for g in list_of_genes:
             idx_g = np.where(self.genes==g)[0][0]
@@ -187,6 +190,8 @@ class JWA(object):
             df = pd.DataFrame()
             df['Genes'] = np.setdiff1d(self.genes,g)
             df['Corr'] = corr_list
+            df.to_csv(os.path.join(self.directory_results,'Correlation','g'+'.csv'),index=False)
+
             if dir == 'pos':
                 df.sort_values(by='Corr',ascending=False,inplace=True)
             else:
