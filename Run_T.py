@@ -21,7 +21,7 @@ JW_obj.Load_TCR(alpha_file,beta_file,Load_Prev_Data=False)
 #list_of_genes = ['IL2']
 #JW_obj.Corr_Genes(list_of_genes,dir='pos')
 
-JW_obj.Plot('By_Clone',clone=JW_obj.Clone_Tab.index[0],samples='GBM035')
+JW_obj.Plot('By_Clone',clone=JW_obj.Clone_Tab.index[11],samples='GBM040')
 clone_barcode = JW_obj.barcode_tcr[JW_obj.clone_id==JW_obj.Clone_Tab.index[0]]
 
 list_of_genes = ['IL2','GZMA','GNLY','PRF1','GZMB','GZMK','IFNG','LAG3','TIGIT','PDCD1','HAVCR2','CTLA4']
@@ -36,7 +36,7 @@ JW_obj.HM_Clusters(list_of_genes)
 JW_obj.Cluster_Prop()
 # By_Gene, By_Sample, By_Cluster
 #samples=['GBM006','GMB030']
-#JW_obj.Plot(type='By_Gene',gene_name='IL7R',s=5)
+JW_obj.Plot(type='By_Gene',gene_name='GNLY',s=5)
 JW_obj.Plot(type='By_Cluster',alpha=1.0)
 JW_obj.Plot(type='By_Sample',samples=samples)
 
