@@ -82,9 +82,17 @@ class JWA(object):
             self.Clone_Tab = self.Clone_Tab.to_frame()
             self.Clone_Tab['Sample'] = [self.barcode_tcr[np.where(self.Clone_Tab.index[x]==self.clone_id)[0][0]][:6] for x in range(len(self.Clone_Tab))]
 
-    def Run_UMAP(self,Load_Prev_Data=False):
+    def Run_UMAP(self,Load_Prev_Data=False,sample=None):
         if Load_Prev_Data is False:
-            X_2 = umap.UMAP().fit_transform(self.X_mnn)
+            umap_obj = umap.UMAP()
+            if sample is not None:
+                idx = np.random.choice(range(len(self.X_mnn)),sample,replace=False)
+                umap_obj.fit(self.X_mnn[idx])
+            else:
+                umap_obj.fit(self.X_mnn)
+
+            X_2 = umap_obj.transform(self.X_mnn)
+
             with open(os.path.join(self.Name,'umap_Data.pkl'),'wb') as f:
                 pickle.dump(X_2,f,protocol=4)
         else:
@@ -93,13 +101,13 @@ class JWA(object):
 
         self.X_2 = X_2
 
-    def Run_DiffMap(self,Load_Prev_Data=False,sample=None):
+    def Run_DiffMap(self,Load_Prev_Data=False,sample=None,k=64):
         if Load_Prev_Data is False:
             if sample is not None:
                 idx = np.random.choice(range(len(self.X_mnn)),sample,replace=False)
-                dm = pydiffmap.diffusion_map.DiffusionMap.from_sklearn(n_evecs=2).fit(self.X_mnn[idx])
+                dm = pydiffmap.diffusion_map.DiffusionMap.from_sklearn(n_evecs=2,k=k).fit(self.X_mnn[idx])
             else:
-                dm = pydiffmap.diffusion_map.DiffusionMap.from_sklearn(n_evecs=2).fit(self.X_mnn)
+                dm = pydiffmap.diffusion_map.DiffusionMap.from_sklearn(n_evecs=2,k=k).fit(self.X_mnn)
 
             X_2 = dm.transform(self.X_mnn)
 
