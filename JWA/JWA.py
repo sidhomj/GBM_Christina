@@ -257,7 +257,6 @@ class JWA(object):
 
         self.Corr_Genes_DF = dict(zip(list_of_genes,DFs))
 
-
     def HM_Clusters(self,list_of_genes):
         idx = np.where(np.isin(self.genes,list_of_genes))[0]
         X = self.X[idx,:].T
