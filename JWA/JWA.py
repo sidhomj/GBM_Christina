@@ -10,6 +10,7 @@ import seaborn as sns
 from JWA.utils import *
 from scipy.stats import spearmanr
 from multiprocessing import Pool
+import pydiffmap
 
 class JWA(object):
     def __init__(self,Name='Analysis'):
@@ -88,6 +89,24 @@ class JWA(object):
                 pickle.dump(X_2,f,protocol=4)
         else:
             with open(os.path.join(self.Name,'umap_Data.pkl'),'rb') as f:
+                X_2 = pickle.load(f)
+
+        self.X_2 = X_2
+
+    def Run_DiffMap(self,Load_Prev_Data=False,sample=None):
+        if Load_Prev_Data is False:
+            if sample is not None:
+                idx = np.random.choice(range(len(self.X_mnn)),sample,replace=False)
+                dm = pydiffmap.diffusion_map.DiffusionMap.from_sklearn(n_evecs=2).fit(self.X_mnn[idx])
+            else:
+                dm = pydiffmap.diffusion_map.DiffusionMap.from_sklearn(n_evecs=2).fit(self.X_mnn)
+
+            X_2 = dm.transform(self.X_mnn)
+
+            with open(os.path.join(self.Name,'dm_Data.pkl'),'wb') as f:
+                pickle.dump(X_2,f,protocol=4)
+        else:
+            with open(os.path.join(self.Name, 'dm_Data.pkl'), 'wb') as f:
                 X_2 = pickle.load(f)
 
         self.X_2 = X_2

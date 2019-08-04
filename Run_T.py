@@ -10,6 +10,7 @@ id_file = 'JW_data/t_id.csv'
 gene_file = 'JW_data/t_genes.csv'
 
 JW_obj.Load_Data(data_file,id_file,gene_file,mnn_file,Load_Prev_Data=True)
+JW_obj.Run_DiffMap(Load_Prev_Data=False,sample=10000)
 JW_obj.Run_UMAP(Load_Prev_Data=True)
 JW_obj.Load_Clustering(cluster_file,Load_Prev_Data=True)
 
