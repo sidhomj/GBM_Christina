@@ -10,9 +10,10 @@ id_file = 'JW_data/t_id.csv'
 gene_file = 'JW_data/t_genes.csv'
 
 JW_obj.Load_Data(data_file,id_file,gene_file,mnn_file,Load_Prev_Data=True)
+JW_obj.Load_Clustering(cluster_file,Load_Prev_Data=True,exclude_clusters = ['14', '15'])
+
 JW_obj.Run_DiffMap(Load_Prev_Data=False,sample=10000)
 JW_obj.Run_UMAP(Load_Prev_Data=True)
-JW_obj.Load_Clustering(cluster_file,Load_Prev_Data=True)
 
 alpha_file = 'GBM Single Cell Data Share/072519/vdj/tra.csv'
 beta_file = 'GBM Single Cell Data Share/072519/vdj/trb.csv'

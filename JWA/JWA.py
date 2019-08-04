@@ -111,7 +111,7 @@ class JWA(object):
 
         self.X_2 = X_2
 
-    def Load_Clustering(self,cluster_file,Load_Prev_Data=False):
+    def Load_Clustering(self,cluster_file,Load_Prev_Data=False,include_clusters=None,exclude_clusters=None):
         if Load_Prev_Data is False:
             pandas2ri.activate()
             readRDS = robjects.r['readRDS']
@@ -124,6 +124,13 @@ class JWA(object):
         else:
             with open(os.path.join(self.Name,'cluster_data.pkl'),'rb') as f:
                 C = pickle.load(f)
+
+        if exclude_clusters is not None:
+            idx_keep = ~np.isin(C, exclude_clusters)
+            C = C[idx_keep]
+            self.X = self.X[:,idx_keep]
+            self.X_mnn = self.X_mnn[idx_keep]
+            self.cell_id = self.cell_id[idx_keep]
 
         self.C = C
 
