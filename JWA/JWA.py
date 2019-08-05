@@ -315,8 +315,13 @@ class JWA(object):
         self.Corr_Genes_DF = dict(zip(list_of_genes,DFs))
 
     def HM_Clusters(self,list_of_genes):
+        X = self.X
         idx = np.where(np.isin(self.genes,list_of_genes))[0]
-        X = self.X[idx,:].T
+        X = X[idx,:].T
+
+        # sel = np.random.choice(range(len(X)),10000,replace=False)
+        # X = X[sel]
+        # sns.clustermap(X,standard_scale=1,cmap='bwr')
 
         idx_e = []
         for c in np.unique(self.C):
@@ -329,8 +334,8 @@ class JWA(object):
         df.columns = self.genes[idx]
         color_dict = Generate_Color_Dict(self.C)
         row_colors = [color_dict[x] for x in C]
-        sns.clustermap(data=df,cmap='bwr',row_cluster=False,col_cluster=False,
-                       row_colors=row_colors,standard_scale=1)
+        sns.clustermap(data=df,cmap='bwr',row_cluster=False,col_cluster=True,
+                       row_colors=row_colors,standard_scale=1,z_score=None)
         # for c in np.unique(self.C):
         #     idx_c = np.where(self.C==c)[0]
         #     for x in X:

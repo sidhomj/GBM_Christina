@@ -13,13 +13,20 @@ gene_file = 'JW_data/t_genes.csv'
 JW_obj.Load_Data(data_file,counts_data_file,id_file,gene_file,mnn_file,Load_Prev_Data=True)
 exclude_clusters = ['14', '15']
 JW_obj.Load_Clustering(cluster_file,Load_Prev_Data=True)
-JW_obj.Cluster_Def(top=50,Load_Prev_Data=False,type='unique')
+JW_obj.Cluster_Def(top=50,Load_Prev_Data=True,type='unique')
+
+list_of_genes = []
+for ii,k in enumerate(JW_obj.Cluster_Def_DF.keys(),0):
+    list_of_genes.extend(list(JW_obj.Cluster_Def_DF[k]['Gene'])[0:2])
+    # if ii == 0:
+    #     break
+
+JW_obj.HM_Clusters(list_of_genes)
 
 
 list_of_genes = ['FOXP3']
-list_of_genes = list(JW_obj.Cluster_Def_DF['11']['Gene'])[0:10]
+list_of_genes = list(JW_obj.Cluster_Def_DF['0']['Gene'])[0:10]
 JW_obj.HM_Clusters(list_of_genes)
-
 
 JW_obj.Run_Phate(Load_Prev_Data=False)
 JW_obj.Run_DiffMap(Load_Prev_Data=False,sample=100,k=128)
@@ -40,7 +47,7 @@ list_of_genes = ['IL2','GZMA','GNLY','PRF1','GZMB','GZMK','IFNG','LAG3','TIGIT',
 JW_obj.Cluster_Def(top=50,Load_Prev_Data=True)
 list_of_genes = []
 for ii,k in enumerate(JW_obj.Cluster_Def_DF.keys(),0):
-    list_of_genes.extend(list(JW_obj.Cluster_Def_DF[k]['Gene']))
+    list_of_genes.extend(list(JW_obj.Cluster_Def_DF[k]['Gene'])[0:5])
     # if ii == 0:
     #     break
 
@@ -49,6 +56,8 @@ JW_obj.Cluster_Prop()
 # By_Gene, By_Sample, By_Cluster
 #samples=['GBM006','GMB030']
 JW_obj.Plot(type='By_Gene',gene_name='GNLY',s=5)
+JW_obj.Plot(type='By_Gene',gene_name=JW_obj.Cluster_Def_DF['5']['Gene'].iloc[5],s=5)
+
 JW_obj.Plot(type='By_Cluster',alpha=1.0)
 JW_obj.Plot(type='By_Sample',samples=samples)
 
