@@ -13,6 +13,7 @@ from multiprocessing import Pool, cpu_count
 import pydiffmap
 import phate
 from statsmodels.stats.multitest import multipletests
+from tqdm import tqdm
 
 class JWA(object):
     def __init__(self,Name='Analysis'):
@@ -172,7 +173,7 @@ class JWA(object):
         if Load_Prev_Data is False:
             if type == 'one_v_all':
                 DFs = []
-                for c in np.unique(self.C):
+                for c in tqdm(np.unique(self.C)):
                     pos = np.where(self.C==c)[0]
                     neg = np.where(self.C!=c)[0]
 
@@ -215,7 +216,7 @@ class JWA(object):
                     DFs.append(df)
             else:
                 DFs = []
-                for c in np.unique(self.C):
+                for c in tqdm(np.unique(self.C)):
                     pos = np.where(self.C==c)[0]
                     neg = []
                     for o in np.setdiff1d(np.unique(self.C),c):
@@ -328,7 +329,8 @@ class JWA(object):
         df.columns = self.genes[idx]
         color_dict = Generate_Color_Dict(self.C)
         row_colors = [color_dict[x] for x in C]
-        sns.clustermap(data=df,cmap='bwr',row_cluster=False,row_colors=row_colors,standard_scale=1,col_cluster=False)
+        sns.clustermap(data=df,cmap='bwr',row_cluster=False,col_cluster=False,
+                       row_colors=row_colors,standard_scale=1)
         # for c in np.unique(self.C):
         #     idx_c = np.where(self.C==c)[0]
         #     for x in X:
