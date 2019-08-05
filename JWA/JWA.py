@@ -8,10 +8,11 @@ import umap
 import matplotlib.pyplot as plt
 import seaborn as sns
 from JWA.utils import *
-from scipy.stats import spearmanr
-from multiprocessing import Pool
+from scipy.stats import spearmanr, mannwhitneyu
+from multiprocessing import Pool, cpu_count
 import pydiffmap
 import phate
+from statsmodels.stats.multitest import multipletests
 
 class JWA(object):
     def __init__(self,Name='Analysis'):
@@ -28,12 +29,15 @@ class JWA(object):
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-    def Load_Data(self,data_file,id_file,gene_file,mnn_file,Load_Prev_Data=False):
+    def Load_Data(self,data_file,counts_data_file,id_file,gene_file,mnn_file,Load_Prev_Data=False):
         if Load_Prev_Data is False:
             #Load Data
             pandas2ri.activate()
             readRDS = robjects.r['readRDS']
             X = readRDS(data_file)
+
+            #Load Counts
+            X_counts = readRDS(counts_data_file)
 
             #Load MNN Data
             X_mnn = readRDS(mnn_file)
@@ -47,13 +51,14 @@ class JWA(object):
             cell_id = np.array(df_id.iloc[:,1])
 
             with open(os.path.join(self.Name,'Data.pkl'),'wb') as f:
-                pickle.dump([X,X_mnn,genes,cell_id],f,protocol=4)
+                pickle.dump([X,X_counts,X_mnn,genes,cell_id],f,protocol=4)
 
         else:
             with open(os.path.join(self.Name, 'Data.pkl'), 'rb') as f:
-                X, X_mnn, genes, cell_id = pickle.load(f)
+                X, X_counts, X_mnn, genes, cell_id = pickle.load(f)
 
         self.X = X
+        self.X_counts = X_counts
         self.X_mnn = X_mnn
         self.genes = genes
         self.cell_id = cell_id
@@ -158,31 +163,82 @@ class JWA(object):
             C = C[idx_keep]
             self.X = self.X[:,idx_keep]
             self.X_mnn = self.X_mnn[idx_keep]
+            self.X_counts = self.X_counts[idx_keep]
             self.cell_id = self.cell_id[idx_keep]
 
         self.C = C
 
-    def Cluster_Def(self,top=10,type='one_v_all',Load_Prev_Data=False):
+    def Cluster_Def(self,top=10,type='one_v_all',Load_Prev_Data=False,n_jobs=None):
         if Load_Prev_Data is False:
             if type == 'one_v_all':
                 DFs = []
                 for c in np.unique(self.C):
                     pos = np.where(self.C==c)[0]
                     neg = np.where(self.C!=c)[0]
+
+                    # if n_jobs is None:
+                    #     n_jobs = cpu_count()*2
+                    #
+                    # p = Pool(n_jobs)
+                    # args = list(zip(self.genes,
+                    #                  [self.genes]*len(self.genes),
+                    #                  [self.X_counts]*len(self.genes),
+                    #                  [pos]*len(self.genes),
+                    #                  [neg]*len(self.genes)))
+                    #
+                    # p_val = p.starmap(Gene_Enrichment,args)
+
                     pos_list = []
                     neg_list = []
+                    p_val = []
                     for g in self.genes:
                         g_idx = np.where(self.genes==g)[0][0]
                         pos_val = self.X[g_idx,pos]
                         neg_val = self.X[g_idx,neg]
                         pos_list.append(np.mean(pos_val))
                         neg_list.append(np.mean(neg_val))
+                        #_,p = mannwhitneyu(pos_val,neg_val)
+                        #p_val.append(p)
+
+                    #_,p_val_corrected,_,_ = multipletests(p_val,alpha=0.10,method='fdr_bh')
+
                     df = pd.DataFrame()
                     df['Gene'] = self.genes
                     df['Pos'] = pos_list
                     df['Neg'] = neg_list
                     df['FC'] = df['Pos']-df['Neg']
+                    #df['P_Val'] = p_val
+                    #df['P_Val_Adjusted'] = p_val_corrected
                     df.sort_values(by='FC',ascending=False,inplace=True)
+                    #df = df[df['P_Val_Adjusted'] < 0.05]
+                    df = df.iloc[0:top]
+                    DFs.append(df)
+            else:
+                DFs = []
+                for c in np.unique(self.C):
+                    pos = np.where(self.C==c)[0]
+                    neg = []
+                    for o in np.setdiff1d(np.unique(self.C),c):
+                        neg.append(np.where(self.C==o)[0])
+
+                    pos_list = []
+                    neg_list = []
+                    for g in self.genes:
+                        g_idx = np.where(self.genes==g)[0][0]
+                        pos_val = self.X[g_idx,pos]
+                        pos_list.append(np.mean(pos_val))
+
+                        neg_val = []
+                        for n in neg:
+                            neg_val.append(np.mean(self.X[g_idx,n]))
+                        neg_list.append(np.max(neg_val))
+
+                    df = pd.DataFrame()
+                    df['Gene'] = self.genes
+                    df['Pos'] = pos_list
+                    df['Neg'] = neg_list
+                    df['FC'] = df['Pos'] - df['Neg']
+                    df.sort_values(by='FC', ascending=False, inplace=True)
                     df = df.iloc[0:top]
                     DFs.append(df)
 
@@ -272,7 +328,7 @@ class JWA(object):
         df.columns = self.genes[idx]
         color_dict = Generate_Color_Dict(self.C)
         row_colors = [color_dict[x] for x in C]
-        sns.clustermap(data=df,cmap='bwr',row_cluster=False,row_colors=row_colors,standard_scale=1)
+        sns.clustermap(data=df,cmap='bwr',row_cluster=False,row_colors=row_colors,standard_scale=1,col_cluster=False)
         # for c in np.unique(self.C):
         #     idx_c = np.where(self.C==c)[0]
         #     for x in X:
@@ -352,5 +408,7 @@ class JWA(object):
         plt.title(title)
         plt.xlim(xlim)
         plt.ylim(ylim)
+
+
 
 

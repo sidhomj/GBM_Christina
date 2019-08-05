@@ -1,6 +1,6 @@
 import numpy as np
 import colorsys
-from scipy.stats import spearmanr
+from scipy.stats import spearmanr, mannwhitneyu
 
 def Generate_Color_Dict(labels):
     N = len(np.unique(labels))
@@ -15,3 +15,12 @@ def Gene_Corr_func(c,genes,X,val_g):
     val_c = X[idx_c]
     corr, _ = spearmanr(val_g, val_c)
     return corr
+
+def Gene_Enrichment(g,genes,X,pos,neg):
+    g_idx = np.where(genes == g)[0][0]
+    pos_val = X[g_idx, pos]
+    neg_val = X[g_idx, neg]
+    _, p = mannwhitneyu(pos_val, neg_val)
+    return np.mean(pos_val), np.mean(neg_val), p
+
+
