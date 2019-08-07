@@ -389,6 +389,9 @@ class JWA(object):
             if title is None:
                 title = 'Clusters'
         elif type == 'By_Clone':
+            if not isinstance(clone,np.ndarray):
+                clone = np.asarray([clone])
+
             idx = []
             for c in clone:
                 b = self.barcode_tcr[np.isin(self.clone_id, c)]

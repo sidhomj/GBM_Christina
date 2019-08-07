@@ -22,10 +22,11 @@ JW_obj.Load_TCR(alpha_file,beta_file,Load_Prev_Data=False)
 
 ##Create UMAP
 df_clone = JW_obj.Clone_Tab
-df_clone = df_clone[df_clone['Clone_ID'] >= 20]
+df_clone = df_clone[df_clone['Clone_ID'] >= 10]
 for s in np.unique(df_clone['Sample']):
     df_temp = df_clone[df_clone['Sample']==s]
-    JW_obj.Plot('By_Clone',clone=np.array(df_temp.index),samples=s,title=s)
+    c = np.array(df_temp.index)[0]
+    JW_obj.Plot('By_Clone',clone=c,samples=s,title=s)
 
 JW_obj.Plot(type='By_Sample')
 
