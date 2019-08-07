@@ -13,7 +13,18 @@ gene_file = 'JW_data/t_genes.csv'
 JW_obj.Load_Data(data_file,counts_data_file,id_file,gene_file,mnn_file,Load_Prev_Data=True)
 exclude_clusters = ['14', '15']
 JW_obj.Load_Clustering(cluster_file,Load_Prev_Data=True)
-JW_obj.Cluster_Def(top=50,Load_Prev_Data=True,type='unique')
+#JW_obj.Cluster_Def(top=50,Load_Prev_Data=True,type='unique')
+JW_obj.Run_Phate(Load_Prev_Data=False)
+
+##Create UMAP
+df_clone = JW_obj.Clone_Tab
+df_clone = df_clone[df_clone['Clone_ID'] >= 20]
+for s in np.unique(df_clone['Sample']):
+    df_temp = df_clone[df_clone['Sample']==s]
+    JW_obj.Plot('By_Clone',clone=np.array(df_temp.index),samples=s)
+
+JW_obj.Plot(type='By_Sample')
+
 
 list_of_genes = []
 for ii,k in enumerate(JW_obj.Cluster_Def_DF.keys(),0):
@@ -23,18 +34,19 @@ for ii,k in enumerate(JW_obj.Cluster_Def_DF.keys(),0):
 
 JW_obj.HM_Clusters(list_of_genes)
 
-
 list_of_genes = ['FOXP3']
 list_of_genes = list(JW_obj.Cluster_Def_DF['0']['Gene'])[0:10]
 JW_obj.HM_Clusters(list_of_genes)
 
-JW_obj.Run_Phate(Load_Prev_Data=False)
+JW_obj.Run_Phate(Load_Prev_Data=True)
 JW_obj.Run_DiffMap(Load_Prev_Data=False,sample=100,k=128)
 JW_obj.Run_UMAP(Load_Prev_Data=True)
 
 alpha_file = 'GBM Single Cell Data Share/072519/vdj/tra.csv'
 beta_file = 'GBM Single Cell Data Share/072519/vdj/trb.csv'
 JW_obj.Load_TCR(alpha_file,beta_file,Load_Prev_Data=False)
+
+df_clones = JW_obj.Clone_Tab.reset_index()
 
 #Find correlated genes
 #list_of_genes = ['IL2']
@@ -73,6 +85,8 @@ JW_obj.Plot(type='By_Sample',samples='GMB030')
 
 for s in all_samples:
     JW_obj.Plot(type='By_Sample', samples=s)
+
+
 
 
 

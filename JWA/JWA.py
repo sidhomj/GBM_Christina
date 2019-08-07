@@ -344,7 +344,7 @@ class JWA(object):
         #     break
         # check=1
 
-    def Plot(self,type,gene_name=None,s=15,alpha=1.0,samples=None,clone=None):
+    def Plot(self,type,gene_name=None,s=15,alpha=1.0,samples=None,clone=None,title=None):
         X_2 = self.X_2
         plt.figure()
         plt.scatter(X_2[:,0],X_2[:,1])
@@ -368,14 +368,16 @@ class JWA(object):
 
         if type == 'By_Gene':
             c = X[np.where(self.genes==gene_name)[0][0],:]
-            title = gene_name
+            if title is None:
+                title = gene_name
             cmap = 'jet'
         elif type == 'By_Sample':
             df = pd.DataFrame()
             df['X'] = X_2[:,0]
             df['Y'] = X_2[:,1]
             df['c'] = sample_id
-            title = 'Samples'
+            if title is None:
+                title = 'Samples'
         elif type == 'By_Cluster':
             c = C
             c = c.astype(np.str)
@@ -384,11 +386,13 @@ class JWA(object):
             df['Y'] = X_2[:, 1]
             df['c'] = c
             df['c'] = 'Cluster ' + df['c']
-            title = 'Clusters'
+            if title is None:
+                title = 'Clusters'
         elif type == 'By_Clone':
             b = self.barcode_tcr[np.isin(self.clone_id, clone)]
             idx = np.isin(cell_id,b)
-            title = 'Clone'
+            if title is None:
+                title = 'Clone'
 
         plt.figure()
         if type == 'By_Gene':
