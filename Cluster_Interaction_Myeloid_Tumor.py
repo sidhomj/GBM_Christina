@@ -63,14 +63,14 @@ df_out['M'] = m_clusters
 df_out['Corr'] = corr
 df_out['P_Val'] = p_val
 df_out['P_Val_Corrected'] = p_val_corrected
-df_out.sort_values(by='Corr',ascending=False,inplace=True)
+df_out.sort_values(by='Corr',ascending=True,inplace=True)
 df_out.to_csv('Pos_Corr.csv',index=False)
 
 df_plot = df_out.iloc[0:5]
 for it in df_plot.iterrows():
     plt.figure()
     sns.regplot(tumor_cell_prop[it[1]['Tumor']],myeloid_cell_prop[it[1]['M']])
-    plt.xlabel('Tumor_'+str(it[1]['T']))
+    plt.xlabel('Tumor_'+str(it[1]['Tumor']))
     plt.ylabel('M_'+str(it[1]['M']))
 
 
