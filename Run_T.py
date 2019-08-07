@@ -14,14 +14,18 @@ JW_obj.Load_Data(data_file,counts_data_file,id_file,gene_file,mnn_file,Load_Prev
 exclude_clusters = ['14', '15']
 JW_obj.Load_Clustering(cluster_file,Load_Prev_Data=True)
 #JW_obj.Cluster_Def(top=50,Load_Prev_Data=True,type='unique')
-JW_obj.Run_Phate(Load_Prev_Data=False)
+JW_obj.Run_Phate(Load_Prev_Data=True)
+
+alpha_file = 'GBM Single Cell Data Share/072519/vdj/tra.csv'
+beta_file = 'GBM Single Cell Data Share/072519/vdj/trb.csv'
+JW_obj.Load_TCR(alpha_file,beta_file,Load_Prev_Data=False)
 
 ##Create UMAP
 df_clone = JW_obj.Clone_Tab
 df_clone = df_clone[df_clone['Clone_ID'] >= 20]
 for s in np.unique(df_clone['Sample']):
     df_temp = df_clone[df_clone['Sample']==s]
-    JW_obj.Plot('By_Clone',clone=np.array(df_temp.index),samples=s)
+    JW_obj.Plot('By_Clone',clone=np.array(df_temp.index),samples=s,title=s)
 
 JW_obj.Plot(type='By_Sample')
 

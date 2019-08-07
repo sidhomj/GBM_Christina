@@ -389,8 +389,12 @@ class JWA(object):
             if title is None:
                 title = 'Clusters'
         elif type == 'By_Clone':
-            b = self.barcode_tcr[np.isin(self.clone_id, clone)]
-            idx = np.isin(cell_id,b)
+            idx = []
+            for c in clone:
+                b = self.barcode_tcr[np.isin(self.clone_id, c)]
+                idx.append(np.isin(cell_id,b))
+            # b = self.barcode_tcr[np.isin(self.clone_id, clone)]
+            # idx = np.isin(cell_id,b)
             if title is None:
                 title = 'Clone'
 
@@ -398,8 +402,14 @@ class JWA(object):
         if type == 'By_Gene':
             plt.scatter(X_2[:,0],X_2[:,1],c=c,s=s,cmap=cmap)
         elif type == 'By_Clone':
-            plt.scatter(X_2[~idx,0],X_2[~idx,1],c='grey',s=s,alpha=alpha)
-            plt.scatter(X_2[idx,0],X_2[idx,1],c='r',s=s,alpha=alpha)
+            idx_not = np.sum(np.vstack(idx).T, 1).astype(bool)
+            plt.scatter(X_2[~idx_not,0],X_2[~idx_not,1],c='lightgrey',s=s,alpha=alpha)
+            colors = ['#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#bcf60c',
+                      '#fabebe', '#008080', '#e6beff', '#9a6324', '#fffac8', '#800000', '#aaffc3',
+                      '#808000', '#ffd8b1', '#000075', '#808080', '#ffffff', '#000000']
+            colors = colors[:len(idx)]
+            for i,c in zip(idx,colors):
+                plt.scatter(X_2[i,0],X_2[i,1],c=c,s=s,alpha=alpha)
         else:
             # colors = sns.color_palette('Set3', n_colors=len(np.unique(df['c'])))
             #colors = Generate_Color_Dict(df['c'])
