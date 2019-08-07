@@ -30,15 +30,12 @@ class JWA(object):
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-    def Load_Data(self,data_file,counts_data_file,id_file,gene_file,mnn_file,Load_Prev_Data=False):
+    def Load_Data(self,data_file,id_file,gene_file,mnn_file,Load_Prev_Data=False):
         if Load_Prev_Data is False:
             #Load Data
             pandas2ri.activate()
             readRDS = robjects.r['readRDS']
             X = readRDS(data_file)
-
-            #Load Counts
-            X_counts = readRDS(counts_data_file)
 
             #Load MNN Data
             X_mnn = readRDS(mnn_file)
@@ -52,14 +49,13 @@ class JWA(object):
             cell_id = np.array(df_id.iloc[:,1])
 
             with open(os.path.join(self.Name,'Data.pkl'),'wb') as f:
-                pickle.dump([X,X_counts,X_mnn,genes,cell_id],f,protocol=4)
+                pickle.dump([X,X_mnn,genes,cell_id],f,protocol=4)
 
         else:
             with open(os.path.join(self.Name, 'Data.pkl'), 'rb') as f:
-                X, X_counts, X_mnn, genes, cell_id = pickle.load(f)
+                X, X_mnn, genes, cell_id = pickle.load(f)
 
         self.X = X
-        self.X_counts = X_counts
         self.X_mnn = X_mnn
         self.genes = genes
         self.cell_id = cell_id
@@ -164,7 +160,6 @@ class JWA(object):
             C = C[idx_keep]
             self.X = self.X[:,idx_keep]
             self.X_mnn = self.X_mnn[idx_keep]
-            self.X_counts = self.X_counts[idx_keep]
             self.cell_id = self.cell_id[idx_keep]
 
         self.C = C

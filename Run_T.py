@@ -4,17 +4,16 @@ JW_obj = JWA('T')
 
 #T-cells
 data_file = 'GBM Single Cell Data Share/072519/resid/t.rds'
-counts_data_file = 'GBM Single Cell Data Share/072519/count/t.rds'
 mnn_file = 'GBM Single Cell Data Share/072519/mnn/t.rds'
 cluster_file = 'GBM Single Cell Data Share/072519/idents/tIdents.RDS'
 id_file = 'JW_data/t_id.csv'
 gene_file = 'JW_data/t_genes.csv'
 
-JW_obj.Load_Data(data_file,counts_data_file,id_file,gene_file,mnn_file,Load_Prev_Data=True)
+JW_obj.Load_Data(data_file,id_file,gene_file,mnn_file,Load_Prev_Data=False)
 exclude_clusters = ['14', '15']
-JW_obj.Load_Clustering(cluster_file,Load_Prev_Data=True)
+JW_obj.Load_Clustering(cluster_file,Load_Prev_Data=True,exclude_clusters=exclude_clusters)
 #JW_obj.Cluster_Def(top=50,Load_Prev_Data=True,type='unique')
-JW_obj.Run_Phate(Load_Prev_Data=True)
+JW_obj.Run_Phate(Load_Prev_Data=False)
 
 alpha_file = 'GBM Single Cell Data Share/072519/vdj/tra.csv'
 beta_file = 'GBM Single Cell Data Share/072519/vdj/trb.csv'
